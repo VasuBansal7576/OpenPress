@@ -1,0 +1,111 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,700;1,700&family=Inter:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0A0A;color:#FAFAFA;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;border-bottom:1px solid #141414}
+.logo{display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:#FACC15;flex-shrink:0}
+.wm{font-size:12px;font-weight:600;letter-spacing:.06em}
+.nt{font-size:9px;color:#FACC15;background:#1c1400;padding:2px 6px;border-radius:10px;font-weight:500}
+.nav-r{display:flex;align-items:center;gap:6px}
+.na{font-size:12px;color:#A3A3A3;padding:6px 10px;border-radius:4px;cursor:pointer}
+.nd{width:1px;height:14px;background:#1f1f1f}
+.ng{font-size:12px;color:#525252;padding:6px 10px}
+
+.hero{padding:56px 40px 32px;text-align:center}
+.hed{font-family:'Lora',Georgia,serif;font-size:52px;font-weight:700;line-height:1.1;margin-bottom:16px}
+.hed em{font-style:italic;color:#FACC15}
+.dek{font-size:15px;color:#A3A3A3;line-height:1.7;max-width:520px;margin:0 auto}
+
+.cards-wrap{padding:0 40px 0;max-width:900px;margin:32px auto 0}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.card{background:#141414;border-radius:8px;padding:28px;display:flex;flex-direction:column}
+.card-num{font-size:9px;font-weight:500;color:#525252;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.card-title{font-size:17px;font-weight:600;color:#FAFAFA;margin-bottom:8px;line-height:1.3}
+.card-desc{font-size:12px;color:#A3A3A3;line-height:1.65;margin-bottom:20px;flex:1}
+.inp{width:100%;background:#0A0A0A;border:1px solid #262626;border-radius:5px;padding:11px 14px;color:#FAFAFA;font-size:13px;font-family:'Inter',system-ui;margin-bottom:10px;display:block;outline:none}
+.inp::placeholder{color:#525252}
+.ta{width:100%;background:#0A0A0A;border:1px solid #262626;border-radius:5px;padding:11px 14px;color:#FAFAFA;font-size:13px;font-family:'Inter',system-ui;resize:none;height:88px;margin-bottom:10px;display:block;outline:none}
+.ta::placeholder{color:#525252}
+.btn{width:100%;background:#FACC15;color:#0A0A0A;border:none;border-radius:5px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;display:block}
+.steps{display:flex;gap:0;margin-top:14px}
+.step-item{flex:1;display:flex;align-items:center;gap:5px}
+.step-dot{width:5px;height:5px;border-radius:50%;background:#525252;flex-shrink:0}
+.step-lbl{font-size:10px;color:#525252;font-weight:500}
+.step-arrow{font-size:9px;color:#333;margin-left:auto;padding-right:6px}
+
+.stats{max-width:900px;margin:12px auto 0;padding:0 40px}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);background:#141414;border-radius:8px;overflow:hidden}
+.st{padding:20px 24px;border-right:1px solid #0A0A0A;display:flex;flex-direction:column;gap:4px}
+.st:last-child{border-right:none}
+.sv{font-size:24px;font-weight:600;color:#FAFAFA;line-height:1;display:flex;align-items:baseline;gap:2px}
+.su{font-size:12px;color:#525252;font-weight:400}
+.sl{font-size:10px;color:#525252;margin-top:1px}
+.slive{display:flex;align-items:center;gap:4px;margin-top:4px}
+.ldot{width:5px;height:5px;border-radius:50%;background:#22C55E;flex-shrink:0;animation:lp 2.5s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.3}}
+.ltxt{font-size:9px;color:#22C55E;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+
+footer{padding:16px 40px;border-top:1px solid #141414;margin-top:32px;display:flex;align-items:center;justify-content:space-between}
+.ftl{display:flex;align-items:center;gap:8px}
+.fts{font-size:10px;color:#333}
+.ftn{font-size:10px;color:#525252}
+.ftr{font-size:10px;color:#525252}
+</style>
+
+<div>
+<nav>
+  <div class="logo"><div class="dot"></div><div class="wm">NEWSROOM</div><div class="nt">BETA</div></div>
+  <div class="nav-r">
+    <div class="na">Investigate</div><div class="nd"></div><div class="na">Audit</div><div class="nd"></div><div class="ng">GitHub ↗</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hed">AI journalism that <em>shows</em> its work.</div>
+  <div class="dek">Every source checked. Every claim verified. A transparent pipeline that reasons like a journalist. Not a chatbot. Not a blackbox.</div>
+</div>
+
+<div class="cards-wrap">
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-num">01 — Investigate a topic</div>
+      <div class="card-title">Type a topic.<br>Get a sourced story.</div>
+      <div class="card-desc">The pipeline searches the web, clusters sources by domain, verifies each claim against independent evidence, then writes a full article with inline citations.</div>
+      <input class="inp" placeholder="e.g. EU AI Act enforcement 2026" />
+      <button class="btn">Investigate →</button>
+      <div class="steps">
+        <div class="step-item"><div class="step-dot"></div><div class="step-lbl">Search</div><div class="step-arrow">→</div></div>
+        <div class="step-item"><div class="step-dot"></div><div class="step-lbl">Cluster</div><div class="step-arrow">→</div></div>
+        <div class="step-item"><div class="step-dot"></div><div class="step-lbl">Verify</div><div class="step-arrow">→</div></div>
+        <div class="step-item"><div class="step-dot"></div><div class="step-lbl">Write</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-num">02 — Audit an article</div>
+      <div class="card-title">Paste an article.<br>Get a verdict.</div>
+      <div class="card-desc">Every factual claim is extracted and cross-referenced against live sources. Four labeled sections: unsupported claims, missing context, contradictions, verified. Includes a Virlo factuality score.</div>
+      <textarea class="ta" placeholder="Paste article text or enter a URL..."></textarea>
+      <button class="btn">Run Audit →</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div class="st"><div class="sv">60<span class="su">%</span></div><div class="sl">avg confidence score</div><div class="slive"><div class="ldot"></div><div class="ltxt">from real runs</div></div></div>
+    <div class="st"><div class="sv">4</div><div class="sl">investigations run</div><div class="slive"><div class="ldot"></div><div class="ltxt">live count</div></div></div>
+    <div class="st"><div class="sv">55</div><div class="sl">claims verified total</div><div class="slive"><div class="ldot"></div><div class="ltxt">live count</div></div></div>
+    <div class="st"><div class="sv">36</div><div class="sl">sources checked total</div><div class="slive"><div class="ldot"></div><div class="ltxt">live count</div></div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="ftl"><div class="dot" style="width:5px;height:5px"></div><div class="wm" style="font-size:9px;color:#525252">NEWSROOM</div><div class="fts">·</div><div class="ftn">Built for Vibeathon · April 2026</div><div class="fts">·</div><div class="ftn">Tavily · Groq · Virlo · LiteLLM</div></div>
+  <div class="ftr">View on GitHub ↗</div>
+</footer>
+</div>
