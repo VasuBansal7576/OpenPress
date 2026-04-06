@@ -1,19 +1,31 @@
-"""Quick API key diagnostic — run this to see which keys work."""
+"""Quick API key diagnostic.
+
+Set provider keys in the environment before running:
+  GROQ_API_KEY=...
+  GEMINI_API_KEY=...
+"""
+
 import os
-os.environ["GROQ_API_KEY"] = "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"
-os.environ["GEMINI_API_KEY"] = "AIzaSyCtZ1BYNjOX54Y6Ae54xkaszeQ7p3Qsdrg"
 
 from litellm import completion
 
 models = [
-    "groq/llama-3.3-70b-versatile",
-    "gemini/gemini-2.0-flash",
-    "groq/llama-3.1-8b-instant",
+    ("groq/llama-3.3-70b-versatile", "GROQ_API_KEY"),
+    ("gemini/gemini-2.0-flash", "GEMINI_API_KEY"),
+    ("groq/llama-3.1-8b-instant", "GROQ_API_KEY"),
 ]
 
-for m in models:
+for model, required_key in models:
+    if not os.environ.get(required_key):
+        print(f"⚠️  {model}: skipped because {required_key} is not set")
+        continue
+
     try:
-        r = completion(model=m, messages=[{"role":"user","content":"say hi"}], timeout=10)
-        print(f"✅ {m}: WORKS — {r.choices[0].message.content[:30]}")
-    except Exception as e:
-        print(f"❌ {m}: FAILED — {e}")
+        response = completion(
+            model=model,
+            messages=[{"role": "user", "content": "say hi"}],
+            timeout=10,
+        )
+        print(f"✅ {model}: WORKS — {response.choices[0].message.content[:30]}")
+    except Exception as error:
+        print(f"❌ {model}: FAILED — {error}")
