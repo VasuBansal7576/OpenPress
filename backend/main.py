@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from llm import LLMProviderError
 
 from signal_fetcher import get_signals
 from source_aggregator import aggregate_sources
@@ -27,6 +28,13 @@ app.add_middleware(
 )
 
 runs_db = {}
+
+
+def has_llm_provider() -> bool:
+    return any(
+        os.environ.get(env_name)
+        for env_name in ("OPENROUTER_API_KEY", "GROQ_API_KEY", "GEMINI_API_KEY")
+    )
 
 class InvestigateRequest(BaseModel):
     topic: Optional[str] = None
@@ -64,8 +72,11 @@ async def execute_investigate_pipeline(run_id: str, topic: str):
     trace = TraceBuilder(run_id)
 
     # Real Mode API Check
-    if not os.environ.get("TAVILY_API_KEY") or not os.environ.get("GROQ_API_KEY"):
-        trace.set_failed(0, "Missing API keys. Set TAVILY_API_KEY and GROQ_API_KEY in environment.")
+    if not os.environ.get("TAVILY_API_KEY") or not has_llm_provider():
+        trace.set_failed(
+            0,
+            "Missing API keys. Set TAVILY_API_KEY and at least one of OPENROUTER_API_KEY, GROQ_API_KEY, or GEMINI_API_KEY.",
+        )
         return
 
     try:
@@ -132,8 +143,10 @@ async def execute_investigate_pipeline(run_id: str, topic: str):
         print(f"Pipeline error: {e}")
         traceback.print_exc()
         runs_db[run_id]["status"] = "failed"
-        if "rate_limit" in str(e).lower():
-             runs_db[run_id]["error_message"] = "API rate limit reached. Wait a minute and try again."
+        if isinstance(e, LLMProviderError):
+             runs_db[run_id]["error_message"] = e.public_message
+        elif "rate_limit" in str(e).lower():
+             runs_db[run_id]["error_message"] = "All configured LLM providers are rate-limited right now. Try again in a minute."
         else:
              runs_db[run_id]["error_message"] = f"Pipeline error: {str(e)}"
 
@@ -163,8 +176,11 @@ async def execute_audit_pipeline(run_id: str, text: str, url: Optional[str] = No
     import re
     trace = TraceBuilder(run_id)
 
-    if not os.environ.get("TAVILY_API_KEY") or not os.environ.get("GROQ_API_KEY"):
-        trace.set_failed(0, "Missing API keys. Set TAVILY_API_KEY and GROQ_API_KEY in environment.")
+    if not os.environ.get("TAVILY_API_KEY") or not has_llm_provider():
+        trace.set_failed(
+            0,
+            "Missing API keys. Set TAVILY_API_KEY and at least one of OPENROUTER_API_KEY, GROQ_API_KEY, or GEMINI_API_KEY.",
+        )
         return
         
     if not url:
@@ -241,8 +257,10 @@ async def execute_audit_pipeline(run_id: str, text: str, url: Optional[str] = No
     except Exception as e:
         print(f"Audit pipeline error: {e}")
         runs_db[run_id]["status"] = "failed"
-        if str(e) == "rate_limit":
-             runs_db[run_id]["error_message"] = "API rate limit reached. Wait a minute and try again."
+        if isinstance(e, LLMProviderError):
+             runs_db[run_id]["error_message"] = e.public_message
+        elif "rate_limit" in str(e).lower():
+             runs_db[run_id]["error_message"] = "All configured LLM providers are rate-limited right now. Try again in a minute."
         else:
              runs_db[run_id]["error_message"] = "An unexpected error occurred during the audit."
 
