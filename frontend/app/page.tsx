@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const GITHUB_URL = "#"; 
+const GITHUB_URL = "https://github.com/VasuBansal7576/OpenPress";
 
 interface StatsData {
   avg_confidence: number;
