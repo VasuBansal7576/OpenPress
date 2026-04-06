@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { TraceModal, TraceData } from "@/components/TraceModal";
 import { SourcesModal, type Source } from "@/components/SourcesModal";
+import { getApiBaseUrl } from "@/lib/api";
 
 type StorySource = Source;
 
@@ -31,6 +32,7 @@ interface StoryData extends TraceData {
 export default function StoryScreen() {
   const params = useParams();
   const id = params.id as string;
+  const apiBaseUrl = getApiBaseUrl();
   
   const [data, setData] = useState<StoryData | null>(null);
   const [showTrace, setShowTrace] = useState(false);
@@ -39,8 +41,7 @@ export default function StoryScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/investigate/status/${id}`);
+        const res = await fetch(`${apiBaseUrl}/api/investigate/status/${id}`);
         if (res.ok) {
           const d = await res.json();
           setData(d);
@@ -50,7 +51,7 @@ export default function StoryScreen() {
       }
     };
     if (id) fetchData();
-  }, [id]);
+  }, [apiBaseUrl, id]);
 
   if (!data) return <div className="p-32 text-[#A3A3A3] font-sans text-[13px]">Loading story...</div>;
 

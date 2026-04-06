@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getApiBaseUrl } from "@/lib/api";
 
 const GITHUB_URL = "https://github.com/VasuBansal7576/OpenPress";
 
@@ -14,6 +15,7 @@ interface StatsData {
 
 export default function Home() {
   const router = useRouter();
+  const apiBaseUrl = getApiBaseUrl();
   const [topic, setTopic] = useState("");
   const [auditText, setAuditText] = useState("");
   const [stats, setStats] = useState<StatsData | null>(null);
@@ -24,8 +26,7 @@ export default function Home() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/stats`);
+        const res = await fetch(`${apiBaseUrl}/api/stats`);
         if (res.ok) {
            const d = await res.json();
            setStats(d);
@@ -35,7 +36,7 @@ export default function Home() {
       }
     };
     fetchStats();
-  }, []);
+  }, [apiBaseUrl]);
 
   const handleInvestigate = () => {
     if (topic.trim()) {
@@ -46,8 +47,7 @@ export default function Home() {
   const handleAudit = async () => {
     if (auditText.trim()) {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/audit/start`, {
+        const res = await fetch(`${apiBaseUrl}/api/audit/start`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: auditText })

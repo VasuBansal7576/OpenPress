@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { TraceModal, TraceData } from "@/components/TraceModal";
+import { getApiBaseUrl } from "@/lib/api";
 
 interface AuditIssue {
   type: string;
@@ -21,6 +22,7 @@ export default function AuditReportScreen() {
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
+  const apiBaseUrl = getApiBaseUrl();
 
   const [data, setData] = useState<AuditReportData | null>(null);
   const [showTrace, setShowTrace] = useState(false);
@@ -28,8 +30,7 @@ export default function AuditReportScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/audit/status/${id}`);
+        const res = await fetch(`${apiBaseUrl}/api/audit/status/${id}`);
         if (res.ok) {
           const d = await res.json();
           setData(d);
@@ -39,7 +40,7 @@ export default function AuditReportScreen() {
       }
     };
     if (id) fetchData();
-  }, [id]);
+  }, [apiBaseUrl, id]);
 
   if (!data) return <div className="p-32 text-text-secondary font-sans text-[13px]">Loading audit context...</div>;
 

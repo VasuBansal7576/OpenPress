@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { getApiBaseUrl } from "@/lib/api";
 
 type StepState = "pending" | "active" | "complete" | "failed";
 
@@ -87,6 +88,7 @@ function InvestigateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const topic = searchParams.get("topic") || "Unknown Topic";
+  const apiBaseUrl = getApiBaseUrl();
   
   const [steps, setSteps] = useState<StepData[]>(INITIAL_STEPS);
   const [runId, setRunId] = useState<string | null>(null);
@@ -96,8 +98,7 @@ function InvestigateContent() {
     // Start run
     const startRun = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/investigate/start`, {
+        const res = await fetch(`${apiBaseUrl}/api/investigate/start`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ topic }),
@@ -111,7 +112,7 @@ function InvestigateContent() {
       }
     };
     startRun();
-  }, [topic]);
+  }, [apiBaseUrl, topic]);
 
   useEffect(() => {
     if (!runId) return;
@@ -120,8 +121,7 @@ function InvestigateContent() {
 
     const pollStatus = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/investigate/status/${runId}`);
+        const res = await fetch(`${apiBaseUrl}/api/investigate/status/${runId}`);
         if (!res.ok) throw new Error("Failed to poll trace context");
         const data: InvestigationStatusResponse = await res.json();
         
@@ -162,7 +162,7 @@ function InvestigateContent() {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [runId, router]);
+  }, [apiBaseUrl, runId, router]);
 
   const hasFailed = steps.some(s => s.state === 'failed') || errorMsg;
 

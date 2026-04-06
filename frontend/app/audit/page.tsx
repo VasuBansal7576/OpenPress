@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { StepIndicator, StepState } from "@/components/StepIndicator";
+import { getApiBaseUrl } from "@/lib/api";
 
 interface StepData {
   id: string;
@@ -26,6 +27,7 @@ function AuditProgressContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const text = searchParams.get("text") || "";
+  const apiBaseUrl = getApiBaseUrl();
   
   const [steps, setSteps] = useState<StepData[]>(INITIAL_STEPS);
   const [runId, setRunId] = useState<string | null>(null);
@@ -33,10 +35,9 @@ function AuditProgressContent() {
   useEffect(() => {
     const startRun = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         // To build the UI quickly, we simulate the start endpoint behavior here if needed,
         // but let's assume there's a real API or we just use a fake run ID for now.
-        const res = await fetch(`${port}/api/audit/start`, {
+        const res = await fetch(`${apiBaseUrl}/api/audit/start`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text }),
@@ -56,7 +57,7 @@ function AuditProgressContent() {
       }
     };
     startRun();
-  }, [text]);
+  }, [apiBaseUrl, text]);
 
   useEffect(() => {
     if (!runId) return;
@@ -90,8 +91,7 @@ function AuditProgressContent() {
     let timeoutId: NodeJS.Timeout;
     const pollStatus = async () => {
       try {
-        const port = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${port}/api/audit/status/${runId}`);
+        const res = await fetch(`${apiBaseUrl}/api/audit/status/${runId}`);
         if (!res.ok) throw new Error("Failed to poll status");
         const data = await res.json();
         
@@ -121,7 +121,7 @@ function AuditProgressContent() {
     };
     pollStatus();
     return () => clearTimeout(timeoutId);
-  }, [runId, router]);
+  }, [apiBaseUrl, runId, router]);
 
   return (
     <main className="min-h-screen px-24 py-32 flex flex-col max-w-7xl mx-auto">
